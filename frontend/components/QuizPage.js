@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Clock, Code, Target, Trophy, Share2, Home, RotateCcw, CheckCircle, XCircle, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { quizQuestions } from '@/services/QuizService';
+import '@/styles/QuizPage.css';
 
 const QuizPage = () => {
     const router = useRouter();
@@ -193,9 +194,9 @@ const QuizPage = () => {
                                     <span>Try Again</span>
                                 </button>
 
-                                <button 
-                                onClick={() => openPage('/dashboard')}
-                                className="bg-gray-100 cursor-pointer text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-all duration-200 flex items-center justify-center space-x-2"
+                                <button
+                                    onClick={() => openPage('/dashboard')}
+                                    className="bg-gray-100 cursor-pointer text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-all duration-200 flex items-center justify-center space-x-2"
                                 >
                                     <Home className="w-5 h-5" />
                                     <span>Dashboard</span>
@@ -222,9 +223,9 @@ const QuizPage = () => {
                                 <div key={index} className={`flex items-center justify-between p-3 rounded-lg ${user.isUser ? 'bg-purple-50 border border-purple-200' : 'hover:bg-gray-50'}`}>
                                     <div className="flex items-center space-x-3">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${user.rank === 1 ? 'bg-yellow-100 text-yellow-700' :
-                                                user.rank === 2 ? 'bg-gray-100 text-gray-700' :
-                                                    user.rank === 3 ? 'bg-orange-100 text-orange-700' :
-                                                        user.isUser ? 'bg-purple-200 text-purple-700' : 'bg-gray-100 text-gray-600'
+                                            user.rank === 2 ? 'bg-gray-100 text-gray-700' :
+                                                user.rank === 3 ? 'bg-orange-100 text-orange-700' :
+                                                    user.isUser ? 'bg-purple-200 text-purple-700' : 'bg-gray-100 text-gray-600'
                                             }`}>
                                             {user.rank}
                                         </div>
@@ -272,34 +273,8 @@ const QuizPage = () => {
     const currentQ = quizQuestions[currentQuestion];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
+        <div className="min-h-screen moving-bg">
             <div className="max-w-4xl mx-auto px-6 py-8">
-                {/* Header */}
-                {/* <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                            <Code className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Data Structures & Algorithms</h1>
-                            <p className="text-gray-600">Medium Level Quiz</p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center space-x-4">
-                        {multiplier > 1 && (
-                            <div className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-sm font-medium flex items-center space-x-1">
-                                <Zap className="w-4 h-4" />
-                                <span>{multiplier}x Multiplier!</span>
-                            </div>
-                        )}
-
-                        <div className="text-right">
-                            <div className="text-2xl font-bold text-gray-900">{score.toLocaleString()}</div>
-                            <div className="text-gray-500 text-sm">Points</div>
-                        </div>
-                    </div>
-                </div> */}
 
                 {/* Progress Bar */}
                 <div className="mb-8">
@@ -343,19 +318,36 @@ const QuizPage = () => {
                         </h2>
                     </div>
 
-                    {/* Answer Options */}
-                    <div className="space-y-4">
+                    {/* Door Options - Game Style */}
+                    <div className="flex flex-col md:flex-row justify-center items-end gap-6 md:gap-8 py-4">
                         {currentQ.options.map((option, index) => {
-                            let buttonClass = "w-full p-4 text-left cursor-pointer rounded-xl border-2 transition-all duration-200 font-medium ";
-
+                            // Base door styling
+                            const baseClasses = "group relative w-full max-w-xs max-h-xs h-80 md:w-40 md:h-60 border-4 rounded-t-[3rem] flex flex-col justify-between items-center cursor-pointer transition-all duration-500 transform hover:scale-105";
+                            
+                            let doorClasses = "";
+                            let doorHandle = "";
+                            let doorShadow = "";
+                            
                             if (selectedAnswer === null) {
-                                buttonClass += "border-gray-200 hover:border-purple-300 hover:bg-purple-50 cursor-pointer";
+                                // Mystery doors - rich brown wooden texture
+                                doorClasses = "bg-gradient-to-b from-amber-800 via-amber-900 to-amber-950 border-amber-700 text-white hover:from-amber-700 hover:via-amber-800 hover:to-amber-900 hover:shadow-2xl hover:shadow-amber-500/30";
+                                doorHandle = "bg-yellow-600 shadow-lg shadow-yellow-600/50";
+                                doorShadow = "shadow-xl shadow-amber-900/50";
                             } else if (index === currentQ.correctAnswer) {
-                                buttonClass += "border-green-500 bg-green-50 text-green-800";
-                            } else if (index === selectedAnswer && selectedAnswer !== currentQ.correctAnswer) {
-                                buttonClass += "border-red-500 bg-red-50 text-red-800";
+                                // Winning door - magical green
+                                doorClasses = "bg-gradient-to-b from-emerald-400 via-green-500 to-emerald-600 border-emerald-400 text-white shadow-2xl shadow-emerald-400/60 animate-pulse";
+                                doorHandle = "bg-yellow-400 animate-spin shadow-lg shadow-yellow-400/50";
+                                doorShadow = "shadow-2xl shadow-emerald-500/70";
+                            } else if (index === selectedAnswer) {
+                                // Wrong door - dramatic red
+                                doorClasses = "bg-gradient-to-b from-red-500 via-red-600 to-red-700 border-red-400 text-white shadow-xl shadow-red-500/50";
+                                doorHandle = "bg-gray-600 shadow-lg";
+                                doorShadow = "shadow-xl shadow-red-600/50";
                             } else {
-                                buttonClass += "border-gray-200 bg-gray-50 text-gray-500";
+                                // Other doors fade away
+                                doorClasses = "bg-gradient-to-b from-gray-600 via-gray-700 to-gray-800 border-gray-600 text-gray-400 opacity-40 cursor-default";
+                                doorHandle = "bg-gray-500";
+                                doorShadow = "shadow-lg shadow-gray-700/30";
                             }
 
                             return (
@@ -363,23 +355,46 @@ const QuizPage = () => {
                                     key={index}
                                     onClick={() => handleAnswerSelect(index)}
                                     disabled={selectedAnswer !== null}
-                                    className={buttonClass}
+                                    className={`${baseClasses} ${doorClasses} ${doorShadow}`}
                                 >
-                                    <div className="flex items-center space-x-3">
-                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-bold ${selectedAnswer === null ? 'border-gray-300' :
-                                                index === currentQ.correctAnswer ? 'border-green-500 bg-green-500 text-white' :
-                                                    index === selectedAnswer ? 'border-red-500 bg-red-500 text-white' : 'border-gray-300'
-                                            }`}>
+                                    {/* Door Number/Letter at top */}
+                                    <div className="mt-6 w-12 h-12 rounded-full bg-black/20 flex items-center justify-center border-2 border-white/30">
+                                        <span className="font-bold text-xl text-white">
                                             {String.fromCharCode(65 + index)}
-                                        </div>
-                                        <span>{option}</span>
+                                        </span>
+                                    </div>
+                                    
+                                    {/* Door Handle */}
+                                    <div className={`absolute right-4 top-1/2 w-4 h-8 rounded-full ${doorHandle} transform -translate-y-1/2`}></div>
+                                    
+                                    {/* Answer Text */}
+                                    <div className="px-4 mb-8 text-center">
+                                        <span className="font-bold text-lg leading-tight block">
+                                            {option}
+                                        </span>
+                                    </div>
+                                    
+                                    {/* Door Frame Details */}
+                                    <div className="absolute inset-2 border-2 border-white/10 rounded-t-[2.5rem] pointer-events-none"></div>
+                                    
+                                    {/* Feedback Icons */}
+                                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                                         {selectedAnswer !== null && index === currentQ.correctAnswer && (
-                                            <CheckCircle className="w-5 h-5 text-green-500 ml-auto" />
+                                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center animate-bounce">
+                                                <CheckCircle className="w-10 h-10 text-green-500" />
+                                            </div>
                                         )}
                                         {selectedAnswer === index && selectedAnswer !== currentQ.correctAnswer && (
-                                            <XCircle className="w-5 h-5 text-red-500 ml-auto" />
+                                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center animate-pulse">
+                                                <XCircle className="w-10 h-10 text-red-500" />
+                                            </div>
                                         )}
                                     </div>
+                                    
+                                    {/* Magical glow effect for hover */}
+                                    {selectedAnswer === null && (
+                                        <div className="absolute inset-0 rounded-t-[3rem] bg-gradient-to-t from-transparent via-white/5 to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                                    )}
                                 </button>
                             );
                         })}

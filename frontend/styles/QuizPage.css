@@ -1,0 +1,21 @@
+.moving-bg {
+  min-height: 100vh;
+
+  /* Lighter, more airy purple–blue palette for better contrast */
+  background: linear-gradient(
+    -45deg,
+    #8b5cf6,   /* lighter vibrant purple */
+    #a78bfa,   /* soft violet */
+    #ddd6fe,   /* pastel lavender */
+    #93c5fd    /* light sky-blue accent */
+  );
+
+  background-size: 500% 500%;
+  animation: quizGradientMove 18s ease-in-out infinite;
+}
+
+@keyframes quizGradientMove {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
